@@ -1,3 +1,6 @@
+use crate::ModeClock;
+use std::time::Instant;
+
 pub const DIGITS: &[[&str; 12]; 5] =
 &[
     ["   #", "    ", " ## ", " ## ", " ## ", "### ", "  # ", "####", " ###", "####", " ## ", " ## "],
@@ -25,4 +28,57 @@ pub fn print_digits(s: &str) {
         }
         println!("\x0d");
     } 
+}
+
+/// Constructs a new clock mode, which can be updated and shown.
+/// The update function will return true if 1 second had passed,
+/// which can be used to only print time every single second.
+///
+/// * Example
+///
+/// ```
+/// let clock: ModeClock = modes::clock_new();
+/// loop {
+///     if clock_update(&mut clock) {
+///         clock_show(&clock);
+///     }
+/// }
+pub fn clock_new() -> ModeClock {
+    ModeClock {
+        name: "Clock",
+        state: Instant::now(),
+    }
+}
+
+/// Updates a clock struct.
+///
+/// * Arguments
+///
+/// `clock` - A mutable reference to your clock struct.
+///
+/// * Return
+///
+/// A boolean, which is true if a second had passed, otherwise false.
+pub fn clock_update(clock: &mut ModeClock) -> bool {
+    if clock.state.elapsed().as_millis() >= 1000 {
+        clock.state = Instant::now();
+        return true;
+    }
+    false
+}
+
+/// Displays time.
+/// Combine with `clock_update()` to display the time every
+/// 1 second.
+///
+/// * Arguments
+///
+/// `clock` - An immutable refernce to your clock struct.
+pub fn clock_show(clock: &ModeClock) {
+    print!("{esc}[3;1H", esc = 27 as char);
+
+    let now = chrono::Local::now();
+    let f = now.format("%H:%M:%S").to_string();
+
+    print_digits(&f);
 }

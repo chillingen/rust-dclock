@@ -1,7 +1,10 @@
 mod modes;
 mod input;
+
 use input::*;
-use modes::*;
+use modes::{ModeTimer, ModeClock};
+use modes::clock::*;
+use modes::timer::*;
 
 use crossterm::{event::{poll, read, Event, KeyCode, KeyEvent, KeyModifiers}, Result};
 use crossterm::terminal::{disable_raw_mode, enable_raw_mode, Clear, ClearType};
@@ -20,8 +23,8 @@ fn init_screen() {
 }
 
 fn main() -> Result<()> {
-    let mut clock: ModeClock = modes::clock_new();
-    let mut timer: ModeTimer = modes::timer_new(5);
+    let mut clock: ModeClock = clock_new();
+    let mut timer: ModeTimer = timer_new(5);
 
     let mut selected: DClockMode = DClockMode::ModeClock;
 
