@@ -1,6 +1,9 @@
 use crate::ModeClock;
 use std::time::Instant;
 
+use crossterm::{execute, style::Print, cursor::MoveTo};
+use std::io::stdout;
+
 pub const DIGITS: &[[&str; 12]; 5] =
 &[
     ["   #", "    ", " ## ", " ## ", " ## ", "### ", "  # ", "####", " ###", "####", " ## ", " ## "],
@@ -78,8 +81,10 @@ pub fn clock_update(clock: &mut ModeClock) -> bool {
 /// * Arguments
 ///
 /// `clock` - An immutable refernce to your clock struct.
-pub fn clock_show(clock: &ModeClock) {
-    print!("{esc}[3;1H", esc = 27 as char);
+pub fn clock_show(_clock: &ModeClock) {
+    execute!(stdout(),
+        MoveTo(2, 1)
+    ).unwrap();
 
     let now = chrono::Local::now();
     let f = now.format("%H:%M:%S").to_string();
