@@ -46,6 +46,10 @@ const INDEX_EVERY_SECONDS: usize = 0;
 const INDEX_BEEPON: usize = 1;
 pub fn timer_update(timer: &mut ModeTimer) -> bool {
     
+    if timer.state[INDEX_EVERY_SECONDS] < 0 {
+        return false;
+    }
+
     let now: i64 = chrono::Local::now().timestamp(); 
 
     if now >= timer.state[INDEX_BEEPON] {

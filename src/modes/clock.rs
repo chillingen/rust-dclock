@@ -28,11 +28,11 @@ pub fn print_digits(s: &str) {
                 None => {},
             }
             execute!(stdout(),
-                Print(format!("{}", buf))
+                Print(format!("{} ", buf))
             ).unwrap();
         }
         execute!(stdout(),
-            Print("\n".to_string())
+            Print("\x0d\n".to_string())
         ).unwrap();
     } 
 }
@@ -83,7 +83,7 @@ pub fn clock_update(clock: &mut ModeClock) -> bool {
 /// `clock` - An immutable refernce to your clock struct.
 pub fn clock_show(_clock: &ModeClock) {
     execute!(stdout(),
-        MoveTo(2, 1)
+        MoveTo(0, 1)
     ).unwrap();
 
     let now = chrono::Local::now();

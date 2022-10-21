@@ -1,12 +1,14 @@
 use crossterm::event::{read, Event, KeyCode};
-use crossterm::{execute, style::Print};
+use crossterm::{execute, style::Print, cursor::MoveTo, terminal::{ClearType, Clear}};
 use std::io::stdout;
 
 pub fn get_user_numbers() -> Option<i32> {
     let mut buf: Vec<char> = Vec::new();
     
     execute!(stdout(),
-        Print("Seconds?")
+        Clear(ClearType::All),
+        MoveTo(0, 0),
+        Print("Seconds?\n\x0d")
     ).unwrap();
 
     'main: loop {
@@ -17,6 +19,9 @@ pub fn get_user_numbers() -> Option<i32> {
                 }
                 if let KeyCode::Char(c) = key_event.code {       
                     buf.push(c);
+                    execute!(stdout(),
+                        Print(c)
+                    ).unwrap();
                 }
             },
             _ => (),

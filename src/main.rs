@@ -29,7 +29,7 @@ fn init_screen() {
 
 fn main() -> Result<()> {
     let mut clock: ModeClock = clock_new();
-    let mut timer: ModeTimer = timer_new(5);
+    let mut timer: ModeTimer = timer_new(-1);
 
     let mut selected: DClockMode = DClockMode::ModeClock;
 
@@ -54,13 +54,17 @@ fn main() -> Result<()> {
                     execute!(stdout(),
                         Print("Invalid input, try again.".to_string())
                     ).unwrap();
+                } else {
+                    timer = timer_new(i.into());
                 }
                 selected = DClockMode::ModeClock;
+                init_screen();
             } 
             DClockMode::ModeAlarm => todo!("alarm"),
         } 
         if timer_update_return {
             timer_show(&timer);
+            timer = timer_new(-1);
         }
         
         if poll(Duration::from_millis(100))? {
