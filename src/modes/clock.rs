@@ -24,9 +24,13 @@ pub fn print_digits(s: &str) {
                 Some(n) => buf.push_str(DIGITS[y][(n + 2) as usize]),
                 None => {},
             }
-            print!("{} ", buf);
+            execute!(stdout(),
+                Print(format!("{}", buf))
+            ).unwrap();
         }
-        println!("\x0d");
+        execute!(stdout(),
+            Print("\n".to_string())
+        ).unwrap();
     } 
 }
 

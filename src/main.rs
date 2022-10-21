@@ -7,6 +7,7 @@ use modes::clock::*;
 use modes::timer::*;
 
 use crossterm::{event::{poll, read, Event, KeyCode, KeyEvent, KeyModifiers}, Result};
+use crossterm::cursor::MoveTo;
 use crossterm::terminal::{disable_raw_mode, enable_raw_mode, Clear, ClearType};
 use crossterm::{execute, style::Print};
 use std::io::{stdout, Write};
@@ -19,7 +20,11 @@ enum DClockMode {
 }
 
 fn init_screen() {
-    execute!(stdout(), Clear(ClearType::All)); 
+    execute!(stdout(),
+        MoveTo(0, 0),
+        Clear(ClearType::All),
+        Print("Clock: c, Timer: t, Alarm: a.".to_string()) 
+    ).unwrap(); 
 }
 
 fn main() -> Result<()> {
@@ -27,8 +32,6 @@ fn main() -> Result<()> {
     let mut timer: ModeTimer = timer_new(5);
 
     let mut selected: DClockMode = DClockMode::ModeClock;
-
-    let mut stdout = stdout();
 
     enable_raw_mode().unwrap();
     init_screen();
@@ -48,7 +51,9 @@ fn main() -> Result<()> {
                     None => -1,
                 };
                 if i < 0 {
-                    println!("Invalid input, try again.\x0d");
+                    execute!(stdout(),
+                        Print("Invalid input, try again.".to_string())
+                    ).unwrap();
                 }
                 selected = DClockMode::ModeClock;
             } 

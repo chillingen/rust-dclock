@@ -1,5 +1,8 @@
 use crate::ModeTimer;
 
+use crossterm::{execute, style::Print};
+use std::io::stdout;
+
 /// Constructs a new timer mode. Just like the clock mode,
 /// it can be updated, as well as shown.
 ///
@@ -60,5 +63,7 @@ pub fn timer_update(timer: &mut ModeTimer) -> bool {
 ///
 /// `timer` - An immutable reference to your timer struct.
 pub fn timer_show(timer: &ModeTimer) {
-    println!(">> {}: BEEP! Time is: {} <<", timer.name, chrono::Local::now().to_rfc2822());
+    execute!(stdout(),
+        Print(format!(">> {}: BEEP! Time is: {} <<", timer.name, chrono::Local::now().to_rfc2822()))
+    ).unwrap();
 }
