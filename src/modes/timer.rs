@@ -1,7 +1,12 @@
 use crate::ModeTimer;
+use crate::modes::clock::print_digits;
 
-use crossterm::{execute, style::Print};
+use crossterm::{execute, style::Print, cursor::MoveTo};
 use std::io::stdout;
+
+use chrono::NaiveTime;
+
+const TIMER_BOUND: [u16; 2] = [0, 7];
 
 /// Constructs a new timer mode. Just like the clock mode,
 /// it can be updated, as well as shown.
@@ -67,7 +72,26 @@ pub fn timer_update(timer: &mut ModeTimer) -> bool {
 ///
 /// `timer` - An immutable reference to your timer struct.
 pub fn timer_show(timer: &ModeTimer) {
+    
     execute!(stdout(),
-        Print(format!(">> {}: BEEP! Time is: {} <<", timer.name, chrono::Local::now().to_rfc2822()))
+        MoveTo(TIMER_BOUND[0], TIMER_BOUND[1]),
     ).unwrap();
+    
+    if timer.state[INDEX_EVERY_SECONDS] < 0 {
+        print_digits(&"00:00:00".to_string());
+        return;
+    }
+
+    let beep_on = timer.state[INDEX_BEEPON];
+    let now: i64 = chrono::Local::now().timestamp();
+    
+    let seconds_left = beep_on - now;
+
+    let t: NaiveTime = NaiveTime::from_num_seconds_from_midnight(
+        seconds_left.try_into().unwrap(),
+        0
+    );
+    
+    let t_formatted = t.format("%H:%M:%S").to_string();
+    print_digits(&t_formatted);
 }

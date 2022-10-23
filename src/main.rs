@@ -23,7 +23,7 @@ fn init_screen() {
     execute!(stdout(),
         MoveTo(0, 0),
         Clear(ClearType::All),
-        Print("Clock: c, Timer: t, Alarm: a.".to_string()) 
+        Print("Clock: c, Set timer: t.".to_string()) 
     ).unwrap(); 
 }
 
@@ -62,8 +62,9 @@ fn main() -> Result<()> {
             } 
             DClockMode::ModeAlarm => todo!("alarm"),
         } 
+
+        timer_show(&timer);
         if timer_update_return {
-            timer_show(&timer);
             timer = timer_new(-1);
         }
         
@@ -79,10 +80,10 @@ fn main() -> Result<()> {
                     modifiers: KeyModifiers::NONE,..
                 }) => selected = DClockMode::ModeTimer,
 
-                Event::Key(KeyEvent {
+                /*Event::Key(KeyEvent {
                     code: KeyCode::Char('a'),
                     modifiers: KeyModifiers::NONE,..
-                }) => selected = DClockMode::ModeAlarm,                
+                }) => selected = DClockMode::ModeAlarm,*/
 
                 Event::Key(KeyEvent {
                     code: KeyCode::Char('q'),
